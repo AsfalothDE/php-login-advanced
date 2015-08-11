@@ -17,6 +17,8 @@ return array(
   "DB_NAME" => "database", 
   "DB_USER" => "user",
   "DB_PASS" => "password",
+  "DB_TABLE_USER" => 'users',
+  "DB_TABLE_CONNECTIONS" => 'user_connections',
   'SITE_URL'=> 'example.com',
 
 /**

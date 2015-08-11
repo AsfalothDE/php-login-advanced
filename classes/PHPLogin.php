@@ -173,7 +173,7 @@ class PHPLogin {
     // if database connection opened
     if ($this->databaseConnection()) {
       // database query, getting all the info of the selected user
-      $query_user = $this->db_connection->prepare('SELECT * FROM users WHERE user_name = :user_name');
+      $query_user = $this->db_connection->prepare('SELECT * FROM ' . $this->config->DB_TABLE_USER . ' WHERE user_name = :user_name');
       $query_user->bindValue(':user_name', $user_name, PDO::PARAM_STR);
       $query_user->execute();
       // get result row (as an object)
@@ -192,7 +192,7 @@ class PHPLogin {
     // if database connection opened
     if ($this->databaseConnection()) {
       // database query, getting all the info of the selected user
-      $query_user = $this->db_connection->prepare('SELECT * FROM users WHERE user_email = :user_email');
+      $query_user = $this->db_connection->prepare('SELECT * FROM ' . $this->config->DB_TABLE_USER . ' WHERE user_email = :user_email');
       $query_user->bindValue(':user_email', $user_email, PDO::PARAM_STR);
       $query_user->execute();
       // get result row (as an object)
@@ -264,8 +264,8 @@ class PHPLogin {
         // cookie looks good, try to select corresponding user
         if ($this->databaseConnection()) {
           // get real token from database (and all other data)
-          $sth = $this->db_connection->prepare("SELECT u.user_id, u.user_name, u.user_email, u.user_access_level FROM user_connections uc
-                                                LEFT JOIN users u ON uc.user_id = u.user_id WHERE uc.user_id = :user_id
+          $sth = $this->db_connection->prepare("SELECT u.user_id, u.user_name, u.user_email, u.user_access_level FROM " . $this->config->DB_TABLE_CONNECTIONS . " uc
+                                                LEFT JOIN " . $this->config->DB_TABLE_USER . " u ON uc.user_id = u.user_id WHERE uc.user_id = :user_id
                                                 AND uc.user_rememberme_token = :user_rememberme_token AND uc.user_rememberme_token IS NOT NULL");
           $sth->bindValue(':user_id', $user_id, PDO::PARAM_INT);
           $sth->bindValue(':user_rememberme_token', $token, PDO::PARAM_STR);
@@ -331,7 +331,7 @@ class PHPLogin {
       // using PHP 5.5's password_verify() function to check if the provided passwords fits to the hash of that user's password
       } else if (! password_verify($user_password, $result_row->user_password_hash)) {
         // increment the failed login counter for that user
-        $sth = $this->db_connection->prepare('UPDATE users '
+        $sth = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' '
                 . 'SET user_failed_logins = user_failed_logins+1, user_last_failed_login = :user_last_failed_login '
                 . 'WHERE user_name = :user_name OR user_email = :user_name');
         $sth->execute(array(':user_name' => $user_name, ':user_last_failed_login' => time()));
@@ -349,7 +349,7 @@ class PHPLogin {
         $_SESSION['user_logged_in'] = 1;
 
         // reset the failed login counter for that user
-        $sth = $this->db_connection->prepare('UPDATE users '
+        $sth = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' '
                 . 'SET user_failed_logins = 0, user_last_failed_login = NULL '
                 . 'WHERE user_id = :user_id AND user_failed_logins != 0');
         $sth->execute(array(':user_id' => $result_row->user_id));
@@ -371,7 +371,7 @@ class PHPLogin {
             $user_password_hash = $this->getPasswordHash($user_password);
 
             // save the new password hash into database
-            $query_update = $this->db_connection->prepare('UPDATE users SET user_password_hash = :user_password_hash WHERE user_id = :user_id');
+            $query_update = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_password_hash = :user_password_hash WHERE user_id = :user_id');
             $query_update->bindValue(':user_password_hash', $user_password_hash, PDO::PARAM_STR);
             $query_update->bindValue(':user_id', $result_row->user_id, PDO::PARAM_INT);
             $query_update->execute();
@@ -397,7 +397,7 @@ class PHPLogin {
       $random_token_string = hash('sha256', mt_rand());
       // record the new token for this user/device
       if ($current_rememberme_token == '') {
-        $sth = $this->db_connection->prepare("INSERT INTO user_connections (user_id, user_rememberme_token, user_login_agent, user_login_ip, user_login_datetime, user_last_visit) VALUES (:user_id, :user_rememberme_token, :user_login_agent, :user_login_ip, now(), now())");
+        $sth = $this->db_connection->prepare("INSERT INTO " . $this->config->DB_TABLE_CONNECTIONS . " (user_id, user_rememberme_token, user_login_agent, user_login_ip, user_login_datetime, user_last_visit) VALUES (:user_id, :user_rememberme_token, :user_login_agent, :user_login_ip, now(), now())");
         $sth->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $sth->bindValue(':user_rememberme_token', $random_token_string, PDO::PARAM_STR);
         $sth->bindValue(':user_login_agent', $_SERVER['HTTP_USER_AGENT'], PDO::PARAM_STR);
@@ -406,7 +406,7 @@ class PHPLogin {
       }
       // update current rememberme token hash by a new one
       else {
-        $sth = $this->db_connection->prepare("UPDATE user_connections SET user_rememberme_token = :new_token, user_last_visit=now(), user_last_visit_agent = :user_agent WHERE user_id = :user_id AND user_rememberme_token = :old_token");
+        $sth = $this->db_connection->prepare("UPDATE " . $this->config->DB_TABLE_CONNECTIONS . " SET user_rememberme_token = :new_token, user_last_visit=now(), user_last_visit_agent = :user_agent WHERE user_id = :user_id AND user_rememberme_token = :old_token");
         $sth->bindValue(':new_token', $random_token_string, PDO::PARAM_STR);
         $sth->bindValue(':user_agent', $_SERVER['HTTP_USER_AGENT'], PDO::PARAM_STR);
         $sth->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
@@ -435,7 +435,7 @@ class PHPLogin {
       // check cookie hash validity
       if ($hash == hash('sha256', $user_id . ':' . $token . $this->config->COOKIE_SECRET_KEY) && !empty($token)) {
         // Reset rememberme token of this device
-        $sth = $this->db_connection->prepare("DELETE FROM user_connections WHERE user_rememberme_token = :user_rememberme_token AND user_id = :user_id");
+        $sth = $this->db_connection->prepare("DELETE FROM " . $this->config->DB_TABLE_CONNECTIONS . " WHERE user_rememberme_token = :user_rememberme_token AND user_id = :user_id");
         $sth->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $sth->bindValue(':user_rememberme_token', $token, PDO::PARAM_STR);
         $sth->execute();
@@ -486,7 +486,7 @@ class PHPLogin {
         $this->errors[] = MESSAGE_USERNAME_EXISTS;
       } else {
         // write user's new data into database
-        $query_edit_user_name = $this->db_connection->prepare('UPDATE users SET user_name = :user_name WHERE user_id = :user_id');
+        $query_edit_user_name = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_name = :user_name WHERE user_id = :user_id');
         $query_edit_user_name->bindValue(':user_name', $user_name, PDO::PARAM_STR);
         $query_edit_user_name->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $query_edit_user_name->execute();
@@ -522,7 +522,7 @@ class PHPLogin {
         $this->errors[] = MESSAGE_EMAIL_ALREADY_EXISTS;
       } else {
         // write users new data into database
-        $query_edit_user_email = $this->db_connection->prepare('UPDATE users SET user_email = :user_email WHERE user_id = :user_id');
+        $query_edit_user_email = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_email = :user_email WHERE user_id = :user_id');
         $query_edit_user_email->bindValue(':user_email', $user_email, PDO::PARAM_STR);
         $query_edit_user_email->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $query_edit_user_email->execute();
@@ -562,7 +562,7 @@ class PHPLogin {
           // crypt the new user's password with the PHP 5.5's password_hash() function
           $user_password_hash = $this->getPasswordHash($user_password_new);
           // write users new hash into database
-          $query_update = $this->db_connection->prepare('UPDATE users SET user_password_hash = :user_password_hash WHERE user_id = :user_id');
+          $query_update = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_password_hash = :user_password_hash WHERE user_id = :user_id');
           $query_update->bindValue(':user_password_hash', $user_password_hash, PDO::PARAM_STR);
           $query_update->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
           $query_update->execute();
@@ -602,7 +602,7 @@ class PHPLogin {
       // if this user exists
       if (isset($result_row->user_id)) {
         // database query:
-        $query_update = $this->db_connection->prepare('UPDATE users SET user_password_reset_hash = :user_password_reset_hash,
+        $query_update = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_password_reset_hash = :user_password_reset_hash,
                                                        user_password_reset_timestamp = :user_password_reset_timestamp
                                                        WHERE user_name = :user_name');
         $query_update->bindValue(':user_password_reset_hash', $user_password_reset_hash, PDO::PARAM_STR);
@@ -696,7 +696,7 @@ class PHPLogin {
       $user_password_hash = $this->getPasswordHash($user_password_new);
   
       // write users new hash into database
-      $query_update = $this->db_connection->prepare('UPDATE users SET user_password_hash = :user_password_hash,
+      $query_update = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_password_hash = :user_password_hash,
                                                      user_password_reset_hash = NULL, user_password_reset_timestamp = NULL
                                                      WHERE user_name = :user_name AND user_password_reset_hash = :user_password_reset_hash');
       $query_update->bindValue(':user_password_hash', $user_password_hash, PDO::PARAM_STR);
@@ -829,7 +829,7 @@ class PHPLogin {
         $user_activation_hash = sha1(uniqid(mt_rand(), true));
 
         // write new users data into database
-        $query_new_user_insert = $this->db_connection->prepare('INSERT INTO users (user_name, user_password_hash, user_email, user_activation_hash, user_registration_ip, user_registration_datetime) VALUES(:user_name, :user_password_hash, :user_email, :user_activation_hash, :user_registration_ip, now())');
+        $query_new_user_insert = $this->db_connection->prepare('INSERT INTO ' . $this->config->DB_TABLE_USER . ' (user_name, user_password_hash, user_email, user_activation_hash, user_registration_ip, user_registration_datetime) VALUES(:user_name, :user_password_hash, :user_email, :user_activation_hash, :user_registration_ip, now())');
         $query_new_user_insert->bindValue(':user_name', $user_name, PDO::PARAM_STR);
         $query_new_user_insert->bindValue(':user_password_hash', $user_password_hash, PDO::PARAM_STR);
         $query_new_user_insert->bindValue(':user_email', $user_email, PDO::PARAM_STR);
@@ -848,7 +848,7 @@ class PHPLogin {
             $this->registration_successful = true;
           } else {
             // delete this users account immediately, as we could not send a verification email
-            $query_delete_user = $this->db_connection->prepare('DELETE FROM users WHERE user_id=:user_id');
+            $query_delete_user = $this->db_connection->prepare('DELETE FROM ' . $this->config->DB_TABLE_USER . ' WHERE user_id=:user_id');
             $query_delete_user->bindValue(':user_id', $user_id, PDO::PARAM_INT);
             $query_delete_user->execute();
 
@@ -894,7 +894,7 @@ class PHPLogin {
     // if database connection opened
     if ($this->databaseConnection()) {
       // try to update user with specified information
-      $query_update_user = $this->db_connection->prepare('UPDATE users SET user_active = 1, user_activation_hash = NULL WHERE user_id = :user_id AND user_activation_hash = :user_activation_hash');
+      $query_update_user = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_active = 1, user_activation_hash = NULL WHERE user_id = :user_id AND user_activation_hash = :user_activation_hash');
       $query_update_user->bindValue(':user_id', intval(trim($user_id)), PDO::PARAM_INT);
       $query_update_user->bindValue(':user_activation_hash', $user_activation_hash, PDO::PARAM_STR);
       $query_update_user->execute();
