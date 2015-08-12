@@ -520,7 +520,7 @@ class PHPLogin{
    * @return bool user's login status
    */
   public function isUserLoggedIn() {
-    return ($_SESSION['user_logged_in'] == 1) ? true : false;
+    return (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in'] == 1) ? true : false;
   }
 
   /**
