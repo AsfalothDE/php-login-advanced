@@ -44,8 +44,11 @@ define("MESSAGE_USERNAME_BAD_LENGTH", "Username cannot be shorter than 2 or long
 define("MESSAGE_USERNAME_CHANGE_FAILED", "Sorry, your chosen username renaming failed");
 define("MESSAGE_USERNAME_CHANGED_SUCCESSFULLY", "Your username has been changed successfully. New username is ");
 define("MESSAGE_USERNAME_EMPTY", "Username field was empty");
+define("MESSAGE_FIRSTNAME_EMPTY", "First name field was empty");
+define("MESSAGE_LASTNAME_EMPTY", "Last name field was empty");
 define("MESSAGE_USERNAME_EXISTS", "Sorry, that username is already taken. Please choose another one.");
 define("MESSAGE_USERNAME_INVALID", "Username does not fit the name scheme: only a-Z and numbers are allowed, 2 to 64 characters");
+define("MESSAGE_FULLNAME_INVALID", "You have to enter your first and last name");
 define("MESSAGE_USERNAME_SAME_LIKE_OLD_ONE", "Sorry, that username is the same as your current one. Please choose another one.");
 
 // views
@@ -63,7 +66,8 @@ define("WORDING_NEW_EMAIL", "Your email");
 define("WORDING_NEW_PASSWORD", "New password");
 define("WORDING_NEW_PASSWORD_REPEAT", "Repeat new password");
 define("WORDING_NEW_USERNAME", "Your username (username cannot be empty and must be azAZ09 and 2-64 characters)");
-define("WORDING_NEW_REALUSERNAME", "Your real name");
+define("WORDING_NEW_FIRSTNAME", "Your first name");
+define("WORDING_NEW_LASTNAME", "Your last name");
 define("WORDING_OLD_PASSWORD", "Your OLD Password");
 define("WORDING_PASSWORD", "Password");
 define("WORDING_PROFILE_PICTURE", "Your profile picture (from gravatar):");

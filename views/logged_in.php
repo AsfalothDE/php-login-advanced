@@ -3,7 +3,7 @@
 
 <p>$_SESSION['user_id'] = <?php echo $_SESSION['user_id']; ?></p>
 <p>$_SESSION['user_name'] = <?php echo $_SESSION['user_name']; ?></p>
-<p>$_SESSION['user_realname'] = <?php echo $_SESSION['user_realname']; ?></p>
+<p>$_SESSION['user_fullname'] = <?php print_r($_SESSION['user_fullname']); ?></p>
 <p>$_SESSION['user_email'] = <?php echo $_SESSION['user_email']; ?></p>
 <p>$_SESSION['user_access_level'] = <?php echo $_SESSION['user_access_level']; ?></p>
 <p>$_SESSION['user_logged_in'] = <?php echo $_SESSION['user_logged_in']; ?></p>

@@ -44,8 +44,11 @@ define("MESSAGE_USERNAME_BAD_LENGTH", "El nombre de usuario debe tener entre 2 y
 define("MESSAGE_USERNAME_CHANGE_FAILED", "Lo sentimos, se ha producido un fallo durante su cambio de nombre de usuario");
 define("MESSAGE_USERNAME_CHANGED_SUCCESSFULLY", "Su nombre de usuario ha sido modificado correctamente. El nuevo es ");
 define("MESSAGE_USERNAME_EMPTY", "El campo de nombre de usuario está vacío");
+define("MESSAGE_FIRSTNAME_EMPTY", "First name field was empty");
+define("MESSAGE_LASTNAME_EMPTY", "Last name field was empty");
 define("MESSAGE_USERNAME_EXISTS", "Lo sentimos, ese nombre de usuario ya está en uso. Por favor, escoja uno nuevo.");
 define("MESSAGE_USERNAME_INVALID", "El nombre de usuario no tiene el formato correcto. Debe tener entre 2 y 64 caracteres y estar formado únicamente por letras (a-Z) y números");
+define("MESSAGE_FULLNAME_INVALID", "You have to enter your first and last name");
 define("MESSAGE_USERNAME_SAME_LIKE_OLD_ONE", "Lo sentimos, ese nombre de usuario es el mismo que tiene actualmente. Introduzca uno distinto.");
 
 // views
@@ -63,7 +66,8 @@ define("WORDING_NEW_EMAIL", "Nuevo correo electrónico");
 define("WORDING_NEW_PASSWORD", "Nueva contraseña");
 define("WORDING_NEW_PASSWORD_REPEAT", "Repita su nueva contraseña");
 define("WORDING_NEW_USERNAME", "Nuevo nombre de usuario (debe tener entre 2 y 64 caracteres y estar formado únicamente por letras (a-Z) y números)");
-define("WORDING_NEW_REALUSERNAME", "Your real name");
+define("WORDING_NEW_FIRSTNAME", "Your first name");
+define("WORDING_NEW_LASTNAME", "Your last name");
 define("WORDING_OLD_PASSWORD", "Su antigua contraseña");
 define("WORDING_PASSWORD", "Contraseña");
 define("WORDING_PROFILE_PICTURE", "Su imagen de perfil (de Gravatar):");

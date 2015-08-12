@@ -44,8 +44,11 @@ define("MESSAGE_USERNAME_BAD_LENGTH", "Le nom d'utilisateur doit contenir entre 
 define("MESSAGE_USERNAME_CHANGE_FAILED", "Désolé, une erreur s'est produite durant le changement de votre nom d'utilisateur.");
 define("MESSAGE_USERNAME_CHANGED_SUCCESSFULLY", "Votre nom d'utilisateur a été changé. Votre nom d'utilisateur est maintenant ");
 define("MESSAGE_USERNAME_EMPTY", "Le nom d'utilisateur est vide");
+define("MESSAGE_FIRSTNAME_EMPTY", "First name field was empty");
+define("MESSAGE_LASTNAME_EMPTY", "Last name field was empty");
 define("MESSAGE_USERNAME_EXISTS", "Désolé, ce nom d'utilisateur est déjà utilisé. Merci d'en choisir un autre.");
 define("MESSAGE_USERNAME_INVALID", "Nom d'utilisateur invalide : seul les lettres a-Z et les chiffres sont autorisés, longueur de 2 à 64 caractères");
+define("MESSAGE_FULLNAME_INVALID", "You have to enter your first and last name");
 define("MESSAGE_USERNAME_SAME_LIKE_OLD_ONE", "Désolé, ce nom d'utilisateur est déjà le votre. Merci d'en choisir un autre.");
 
 // views
@@ -63,7 +66,8 @@ define("WORDING_NEW_EMAIL", "Nouvelle adresse email");
 define("WORDING_NEW_PASSWORD", "Nouveau mot de passe");
 define("WORDING_NEW_PASSWORD_REPEAT", "Repéter le nouveau mot de passe");
 define("WORDING_NEW_USERNAME", "Nouveau nom d'utilisateur (seul les lettres a-Z et les chiffres sont autorisés, longueur de 2 à 64 caractères)");
-define("WORDING_NEW_REALUSERNAME", "Your real name");
+define("WORDING_NEW_FIRSTNAME", "Your first name");
+define("WORDING_NEW_LASTNAME", "Your last name");
 define("WORDING_OLD_PASSWORD", "Ancien mot de passe");
 define("WORDING_PASSWORD", "Mot de passe");
 define("WORDING_PROFILE_PICTURE", "Photo de profil (depuis gravatar) :");

@@ -10,8 +10,12 @@
 		<input id="user_name" type="text" name="user_name" class="form-control" pattern="[a-zA-Z0-9]{2,64}" value="<?php echo htmlspecialchars($_SESSION['user_name']); ?>" required <?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
 	</div>
 	<div class="form-group">
-		<label for="user_realname" class="control-label"><?php echo WORDING_NEW_REALUSERNAME; ?></label>
-		<input id="user_realname" type="text" name="user_realname" class="form-control" value="<?php echo htmlspecialchars($_SESSION['user_realname']); ?>"<?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
+		<label for="user_firstname" class="control-label"><?php echo WORDING_NEW_FIRSTNAME; ?></label>
+		<input id="user_firstname" type="text" name="user_firstname" class="form-control" value="<?php echo htmlspecialchars($_SESSION['user_fullname'][0]); ?>" required />
+	</div>
+	<div class="form-group">
+		<label for="user_lastname" class="control-label"><?php echo WORDING_NEW_LASTNAME; ?></label>
+		<input id="user_lastname" type="text" name="user_lastname" class="form-control" value="<?php echo htmlspecialchars($_SESSION['user_fullname'][1]); ?>" required />
 	</div>
 	<div class="form-group">
 		<button type="submit" name="user_edit_submit_name" class="btn btn-default <?php if ($_SESSION['oauth']): ?> btn-disabled<?php endif; ?>"<?php if ($_SESSION['oauth']): ?> disabled<?php endif; ?>><?php echo WORDING_CHANGE_USERNAME; ?></button>
