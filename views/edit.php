@@ -14,7 +14,7 @@
 		<input id="user_realname" type="text" name="user_realname" class="form-control" value="<?php echo htmlspecialchars($_SESSION['user_realname']); ?>"<?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
 	</div>
 	<div class="form-group">
-		<button type="submit" name="user_edit_submit_name" class="btn btn-default"><?php echo WORDING_CHANGE_USERNAME; ?></button>
+		<button type="submit" name="user_edit_submit_name" class="btn btn-default <?php if ($_SESSION['oauth']): ?> btn-disabled<?php endif; ?>"<?php if ($_SESSION['oauth']): ?> disabled<?php endif; ?>><?php echo WORDING_CHANGE_USERNAME; ?></button>
 	</div>
 </form><hr/>
 
