@@ -296,7 +296,7 @@ class PHPLogin{
             // write user data into PHP SESSION [a file on your server]
             $_SESSION['user_id'] = $result_row->user_id;
             $_SESSION['user_name'] = $result_row->user_name ? $result_row->user_name : $result_row->user_realname;
-            $_SESSION['user_realname'] = $result_row->user_realname;
+            $_SESSION['user_realname'] = $result_row->user_realname ? $result_row->user_realname : $result_row->user_name;
             $_SESSION['user_email'] = $result_row->user_email;
             $_SESSION['user_access_level'] = $result_row->user_access_level;
             $_SESSION['user_logged_in'] = 1;
@@ -365,7 +365,7 @@ class PHPLogin{
         // write user data into PHP SESSION [a file on your server]
         $_SESSION['user_id'] = $result_row->user_id;
         $_SESSION['user_name'] = $result_row->user_name ? $result_row->user_name : $result_row->user_realname;
-        $_SESSION['user_realname'] = $result_row->user_realname;
+        $_SESSION['user_realname'] = $result_row->user_realname ? $result_row->user_realname : $result_row->user_name;
         $_SESSION['user_email'] = $result_row->user_email;
         $_SESSION['user_access_level'] = $result_row->user_access_level;
         $_SESSION['user_logged_in'] = 1;
@@ -434,7 +434,7 @@ class PHPLogin{
     } else {
       $_SESSION['user_id'] = $result_row->user_id;
       $_SESSION['user_name'] = $result_row->user_name ? $result_row->user_name : $result_row->user_realname;
-      $_SESSION['user_realname'] = $result_row->user_realname;
+      $_SESSION['user_realname'] = $result_row->user_realname ? $result_row->user_realname : $result_row->user_name;
       $_SESSION['user_email'] = $result_row->user_email;
       $_SESSION['user_access_level'] = $result_row->user_access_level;
       $_SESSION['user_logged_in'] = 1;
