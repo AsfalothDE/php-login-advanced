@@ -1,7 +1,9 @@
 CREATE TABLE IF NOT EXISTS `login`.`users` (
  `user_id` int(11) unsigned NOT NULL COMMENT 'auto incrementing user_id of each user, unique index',
   `user_name` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'user''s name, unique',
-  `user_realname` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_fullname` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_firstname` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_lastname` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `user_password_hash` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'user''s password in salted and hashed format',
   `user_email` varchar(254) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'user''s email, unique',
   `user_access_level` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'user''s access level (between 0 and 255, 255 = administrator)',

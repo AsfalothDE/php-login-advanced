@@ -3,6 +3,12 @@
 	<label for="user_name"><?php echo WORDING_REGISTRATION_USERNAME; ?></label>
 	<input id="user_name" type="text" pattern="[a-zA-Z0-9]{2,64}" name="user_name" value="<?php echo (isset($_POST['user_name']) ? htmlspecialchars($_POST['user_name']) : ''); ?>" required autofocus/>
 
+  <label for="user_firstname"><?php echo WORDING_REGISTRATION_USERNAME; ?></label>
+  <input id="user_firstname" type="text" name="user_firstname" value="<?php echo (isset($_POST['user_firstname']) ? htmlspecialchars($_POST['user_firstname']) : ''); ?>" required/>
+
+  <label for="user_lastname"><?php echo WORDING_REGISTRATION_USERNAME; ?></label>
+  <input id="user_lastname" type="text" name="user_lastname" value="<?php echo (isset($_POST['user_lastname']) ? htmlspecialchars($_POST['user_lastname']) : ''); ?>" required/>
+
 	<label for="user_email"><?php echo WORDING_REGISTRATION_EMAIL; ?></label>
 	<input id="user_email" type="email" name="user_email" value="<?php echo (isset($_POST['user_email']) ? htmlspecialchars($_POST['user_email']) : ''); ?>" required />
 

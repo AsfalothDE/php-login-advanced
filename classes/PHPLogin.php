@@ -81,7 +81,7 @@ class PHPLogin{
     // if we have such a POST request, call the registerNewUser() method
     if (isset($_POST["g-recaptcha-response"]) && isset($_POST["register"]) && ($this->config->ALLOW_USER_REGISTRATION || ($this->config->ALLOW_ADMIN_TO_REGISTER_NEW_USER && $_SESSION['user_access_level'] == 255))) {
        
-      $this->registerNewUser($_POST['user_name'], $_POST['user_email'], $_POST['user_password_new'], $_POST['user_password_repeat'], $_POST["g-recaptcha-response"]);
+      $this->registerNewUser($_POST['user_name'], $_POST['user_firstname'], $_POST['user_lastname'], $_POST['user_email'], $_POST['user_password_new'], $_POST['user_password_repeat'], $_POST["g-recaptcha-response"]);
     // if we have such a GET request, call the verifyNewUser() method
     } else if (isset($_GET["id"]) && isset($_GET["verification_code"])) {
       $this->verifyNewUser($_GET["id"], $_GET["verification_code"]);
@@ -105,7 +105,7 @@ class PHPLogin{
       // user try to change his username
       if (isset($_POST["user_edit_submit_name"])) {
         // function below uses $_SESSION['user_id'] et $_SESSION['user_email']
-        $this->editUserName($_POST['user_name'], $_POST['user_realname']);
+        $this->editUserName($_POST['user_name'], $_POST['user_firstname'], $_POST['user_lastname']);
       // user try to change his email
       } elseif (isset($_POST["user_edit_submit_email"])) {
         // function below uses $_SESSION['user_id'] et $_SESSION['user_email']
@@ -283,7 +283,7 @@ class PHPLogin{
         // cookie looks good, try to select corresponding user
         if ($this->databaseConnection()) {
           // get real token from database (and all other data)
-          $sth = $this->db_connection->prepare("SELECT u.user_id, u.user_name, u.user_realname, u.user_email, u.user_access_level FROM " . $this->config->DB_TABLE_CONNECTIONS . " uc
+          $sth = $this->db_connection->prepare("SELECT u.user_id, u.user_name, u.user_firstname, u.user_lastname, u.user_email, u.user_access_level FROM " . $this->config->DB_TABLE_CONNECTIONS . " uc
                                                 LEFT JOIN " . $this->config->DB_TABLE_USER . " u ON uc.user_id = u.user_id WHERE uc.user_id = :user_id
                                                 AND uc.user_rememberme_token = :user_rememberme_token AND uc.user_rememberme_token IS NOT NULL");
           $sth->bindValue(':user_id', $user_id, PDO::PARAM_INT);
@@ -296,7 +296,7 @@ class PHPLogin{
             // write user data into PHP SESSION [a file on your server]
             $_SESSION['user_id'] = $result_row->user_id;
             $_SESSION['user_name'] = $result_row->user_name;
-            $_SESSION['user_realname'] = $result_row->user_realname ? $result_row->user_realname : $result_row->user_name;
+            $_SESSION['user_fullname'] = array($result_row->user_firstname, $result_row->user_lastname);
             $_SESSION['user_email'] = $result_row->user_email;
             $_SESSION['user_access_level'] = $result_row->user_access_level;
             $_SESSION['user_logged_in'] = 1;
@@ -365,7 +365,7 @@ class PHPLogin{
         // write user data into PHP SESSION [a file on your server]
         $_SESSION['user_id'] = $result_row->user_id;
         $_SESSION['user_name'] = $result_row->user_name;
-        $_SESSION['user_realname'] = $result_row->user_realname ? $result_row->user_realname : $result_row->user_name;
+        $_SESSION['user_fullname'] = array($result_row->user_firstname, $result_row->user_lastname);
         $_SESSION['user_email'] = $result_row->user_email;
         $_SESSION['user_access_level'] = $result_row->user_access_level;
         $_SESSION['user_logged_in'] = 1;
@@ -416,16 +416,16 @@ class PHPLogin{
    *
    * @param $oauth_uid
    * @param string $user_name
-   * @param string $user_realname
+   * @param string $user_fullname
    * @param string $user_email
    * @param string $oauth_provider
    * @param string $oauth_token
    */
-  public function loginWithOAuth($oauth_uid, $user_name = '', $user_realname = '', $user_email = '', $oauth_provider = '', $oauth_token = '') {
+  public function loginWithOAuth($oauth_uid, $user_name = '', $user_firstname = '', $user_lastname = '', $user_email = '', $oauth_provider = '', $oauth_token = '') {
     $result_row = $this->getUserDataFromOAuth($oauth_uid);
 
     if (! isset($result_row->user_id)) {
-      $this->registerWithOAuth($user_name, $user_email, $user_realname, $oauth_uid, $oauth_provider, $oauth_token);
+      $this->registerWithOAuth($user_name, $user_firstname, $user_lastname, $user_email, $oauth_uid, $oauth_provider, $oauth_token);
       if ($this->isRegistrationSuccessful()) {
         $this->loginWithOAuth($oauth_uid);
       }
@@ -434,7 +434,7 @@ class PHPLogin{
     } else {
       $_SESSION['user_id'] = $result_row->user_id;
       $_SESSION['user_name'] = $result_row->user_name;
-      $_SESSION['user_realname'] = $result_row->user_realname ? $result_row->user_realname : $result_row->user_name;
+      $_SESSION['user_fullname'] = array($result_row->user_firstname, $result_row->user_lastname);
       $_SESSION['user_email'] = $result_row->user_email;
       $_SESSION['user_access_level'] = $result_row->user_access_level;
       $_SESSION['user_logged_in'] = 1;
@@ -526,12 +526,14 @@ class PHPLogin{
   /**
    * Edit the user's name, provided in the editing form
    */
-  public function editUserName($user_name, $user_realname) {
+  public function editUserName($user_name, $user_firstname, $user_lastname) {
     // prevent database flooding
     $user_name = substr(trim($user_name), 0, 64);
     // username cannot be empty and must be azAZ09 and 2-64 characters
     if (empty($user_name) || !preg_match('/^[a-zA-Z0-9]{2,64}$/', $user_name)) {
         $this->errors[] = MESSAGE_USERNAME_INVALID;
+    } elseif (empty($user_firstname) || empty($user_lastname)) {
+      $this->errors[] = MESSAGE_FULLNAME_INVALID;
     } else {
       // check if new username already exists
       $result_row = $this->getUserData($user_name);
@@ -539,14 +541,16 @@ class PHPLogin{
         $this->errors[] = MESSAGE_USERNAME_EXISTS;
       } else {
         // write user's new data into database
-        $query_edit_user_name = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_name = :user_name, user_realname = :user_realname WHERE user_id = :user_id');
+        $query_edit_user_name = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_name = :user_name, user_fullname = :user_fullname, user_firstname = :user_firstname, user_lastname = :user_lastname WHERE user_id = :user_id');
         $query_edit_user_name->bindValue(':user_name', $user_name, PDO::PARAM_STR);
-        $query_edit_user_name->bindValue(':user_realname', $user_realname, PDO::PARAM_STR);
+        $query_edit_user_name->bindValue(':user_fullname', $user_firstname . ' ' . $user_lastname, PDO::PARAM_STR);
+        $query_edit_user_name->bindValue(':user_firstname', $user_firstname, PDO::PARAM_STR);
+        $query_edit_user_name->bindValue(':user_lastname', $user_lastname, PDO::PARAM_STR);
         $query_edit_user_name->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $query_edit_user_name->execute();
         if ($query_edit_user_name->rowCount()) {
           $_SESSION['user_name'] = $user_name;
-          $_SESSION['user_realname'] = $user_realname ? $user_realname : $user_name;
+          $_SESSION['user_fullname'] = array($user_firstname, $user_lastname);
           $this->messages[] = MESSAGE_USERNAME_CHANGED_SUCCESSFULLY . $user_name;
         } else {
           $this->errors[] = MESSAGE_USERNAME_CHANGE_FAILED;
@@ -820,7 +824,7 @@ class PHPLogin{
    * handles the entire registration process. checks all error possibilities, and creates a new user in the database if
    * everything is fine
    */
-  private function registerNewUser($user_name, $user_email, $user_password, $user_password_repeat, $captcha){
+  private function registerNewUser($user_name, $user_firstname, $user_lastname, $user_email, $user_password, $user_password_repeat, $captcha){
     // prevent database flooding
     $user_name = substr(trim($user_name), 0, 64);
     $user_email = substr(trim($user_email), 0, 254);
@@ -830,6 +834,10 @@ class PHPLogin{
       ($this->errors[] = MESSAGE_CAPTCHA_WRONG);
     } elseif (empty($user_name)) {
       ($this->errors[] = MESSAGE_USERNAME_EMPTY);
+    } elseif (empty($user_firstname)) {
+      ($this->errors[] = MESSAGE_FIRSTNAME_EMPTY);
+    } elseif (empty($user_lastname)) {
+      ($this->errors[] = MESSAGE_LASTNAME_EMPTY);
     } elseif (empty($user_password) || empty($user_password_repeat)) {
       ($this->errors[] = MESSAGE_PASSWORD_EMPTY);
     } elseif ($user_password !== $user_password_repeat) {
@@ -871,8 +879,11 @@ class PHPLogin{
         $user_activation_hash = sha1(uniqid(mt_rand(), true));
 
         // write new users data into database
-        $query_new_user_insert = $this->db_connection->prepare('INSERT INTO ' . $this->config->DB_TABLE_USER . ' (user_name, user_password_hash, user_email, user_activation_hash, user_registration_ip, user_registration_datetime) VALUES(:user_name, :user_password_hash, :user_email, :user_activation_hash, :user_registration_ip, now())');
+        $query_new_user_insert = $this->db_connection->prepare('INSERT INTO ' . $this->config->DB_TABLE_USER . ' (user_name, user_fullname, user_firstname, user_lastname, user_password_hash, user_email, user_activation_hash, user_registration_ip, user_registration_datetime) VALUES(:user_name, :user_fullname, :user_firstname, :user_lastname, :user_password_hash, :user_email, :user_activation_hash, :user_registration_ip, now())');
         $query_new_user_insert->bindValue(':user_name', $user_name, PDO::PARAM_STR);
+        $query_new_user_insert->bindValue(':user_fullname', $user_name, PDO::PARAM_STR);
+        $query_new_user_insert->bindValue(':user_firstname', $user_name, PDO::PARAM_STR);
+        $query_new_user_insert->bindValue(':user_lastname', $user_name, PDO::PARAM_STR);
         $query_new_user_insert->bindValue(':user_password_hash', $user_password_hash, PDO::PARAM_STR);
         $query_new_user_insert->bindValue(':user_email', $user_email, PDO::PARAM_STR);
         $query_new_user_insert->bindValue(':user_activation_hash', $user_activation_hash, PDO::PARAM_STR);
@@ -913,7 +924,7 @@ class PHPLogin{
    * @param $oauth_token
    * @private
    */
-  private function registerWithOAuth($user_name, $user_email, $user_realname, $oauth_uid, $oauth_provider, $oauth_token) {
+  private function registerWithOAuth($user_name, $user_firstname, $user_lastname, $user_email, $oauth_uid, $oauth_provider, $oauth_token) {
     // check if username already exists
     $result_row = $this->getUserData($user_name);
     // if this user exists
@@ -932,10 +943,12 @@ class PHPLogin{
       // Everthing is ok, create user
     } else {
       // write new users data into database
-      $query_new_user_insert = $this->db_connection->prepare('INSERT INTO ' . $this->config->DB_TABLE_USER . ' (user_name, user_email, user_realname, user_active, user_registration_ip, user_registration_datetime, user_oauth_uid, user_oauth_provider, user_oauth_token) VALUES(:user_name, :user_email, :user_realname, :user_active, :user_registration_ip, now(), :user_oauth_uid, :user_oauth_provider, :user_oauth_token)');
+      $query_new_user_insert = $this->db_connection->prepare('INSERT INTO ' . $this->config->DB_TABLE_USER . ' (user_name, user_email, user_fullname, user_firstname, user_lastname, user_active, user_registration_ip, user_registration_datetime, user_oauth_uid, user_oauth_provider, user_oauth_token) VALUES(:user_name, :user_email, :user_fullname, :user_firstname, :user_lastname, :user_active, :user_registration_ip, now(), :user_oauth_uid, :user_oauth_provider, :user_oauth_token)');
       $query_new_user_insert->bindValue(':user_name', $user_name, PDO::PARAM_STR);
       $query_new_user_insert->bindValue(':user_email', $user_email, PDO::PARAM_STR);
-      $query_new_user_insert->bindValue(':user_realname', $user_realname, PDO::PARAM_STR);
+      $query_new_user_insert->bindValue(':user_fullname', $user_firstname . ' ' . $user_lastname, PDO::PARAM_STR);
+      $query_new_user_insert->bindValue(':user_firstname', $user_firstname, PDO::PARAM_STR);
+      $query_new_user_insert->bindValue(':user_lastname', $user_lastname, PDO::PARAM_STR);
       $query_new_user_insert->bindValue(':user_active', 1, PDO::PARAM_STR);
       $query_new_user_insert->bindValue(':user_registration_ip', $_SERVER['REMOTE_ADDR'], PDO::PARAM_STR);
       $query_new_user_insert->bindValue(':user_oauth_uid', $oauth_uid, PDO::PARAM_STR);

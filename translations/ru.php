@@ -44,8 +44,11 @@ define('MESSAGE_USERNAME_BAD_LENGTH', 'Ник должен быть блинно
 define('MESSAGE_USERNAME_CHANGE_FAILED', 'Извините, смена ника не удалась!');
 define('MESSAGE_USERNAME_CHANGED_SUCCESSFULLY', 'Ник успешно изменён. Ваш новый ник ');
 define('MESSAGE_USERNAME_EMPTY', 'Поле Ник пусто');
+define("MESSAGE_FIRSTNAME_EMPTY", "First name field was empty");
+define("MESSAGE_LASTNAME_EMPTY", "Last name field was empty");
 define('MESSAGE_USERNAME_EXISTS', 'Извините, пользователь с таким ником уже существует. Пожалуйста, выбирите другой.');
 define('MESSAGE_USERNAME_INVALID', 'Ник должен сожержать латинские символы и цифры и быть блинной 2-64 символов');
+define("MESSAGE_FULLNAME_INVALID", "You have to enter your first and last name");
 define('MESSAGE_USERNAME_SAME_LIKE_OLD_ONE', 'Новый ник совпадает со старым. Пожалуйста выбирете другой.');
 
 // views
@@ -63,7 +66,8 @@ define('WORDING_NEW_EMAIL', 'Новое письмо');
 define('WORDING_NEW_PASSWORD', 'Новый пароль');
 define('WORDING_NEW_PASSWORD_REPEAT', 'Повторить пароль');
 define('WORDING_NEW_USERNAME', 'Новый ник (ник должен сожержать латинские символы и цифры и быть блинной 2-64 символов)');
-define("WORDING_NEW_REALUSERNAME", "Your real name");
+define("WORDING_NEW_FIRSTNAME", "Your first name");
+define("WORDING_NEW_LASTNAME", "Your last name");
 define('WORDING_OLD_PASSWORD', 'Ваш старый пароль');
 define('WORDING_PASSWORD', 'Пароль');
 define('WORDING_PROFILE_PICTURE', 'Ваше изображение (Gravatar):');

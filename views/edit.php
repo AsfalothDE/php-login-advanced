@@ -7,10 +7,13 @@
 	<label for="user_name"><?php echo WORDING_NEW_USERNAME; ?></label>
 	<input id="user_name" type="text" name="user_name" pattern="[a-zA-Z0-9]{2,64}" value="<?php echo htmlspecialchars($_SESSION['user_name']); ?>" required <?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
 
-	<label for="user_realname"><?php echo WORDING_NEW_REALUSERNAME; ?></label>
-	<input id="user_realname" type="text" name="user_realname" value="<?php echo htmlspecialchars($_SESSION['user_realname']); ?>"<?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
+	<label for="user_firstname"><?php echo WORDING_NEW_FIRSTNAME; ?></label>
+	<input id="user_firstname" type="text" name="user_firstname" value="<?php echo htmlspecialchars($_SESSION['user_fullname'][0]); ?>" required />
 
-	<input type="submit" name="user_edit_submit_name" value="<?php echo WORDING_CHANGE_USERNAME; ?>"<?php if ($_SESSION['oauth']): ?> disabled<?php endif; ?> />
+	<label for="user_lastname"><?php echo WORDING_NEW_LASTNAME; ?></label>
+	<input id="user_lastname" type="text" name="user_lastname" value="<?php echo htmlspecialchars($_SESSION['user_fullname'][1]); ?>" required />
+
+	<input type="submit" name="user_edit_submit_name" value="<?php echo WORDING_CHANGE_USERNAME; ?>" />
 </form><hr/>
 
 <!-- edit form for user email / this form uses HTML5 attributes, like "required" and type="email" -->
