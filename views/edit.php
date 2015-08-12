@@ -10,7 +10,7 @@
 	<label for="user_realname"><?php echo WORDING_NEW_REALUSERNAME; ?></label>
 	<input id="user_realname" type="text" name="user_realname" value="<?php echo htmlspecialchars($_SESSION['user_realname']); ?>"<?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
 
-	<input type="submit" name="user_edit_submit_name" value="<?php echo WORDING_CHANGE_USERNAME; ?>" />
+	<input type="submit" name="user_edit_submit_name" value="<?php echo WORDING_CHANGE_USERNAME; ?>"<?php if ($_SESSION['oauth']): ?> disabled<?php endif; ?> />
 </form><hr/>
 
 <!-- edit form for user email / this form uses HTML5 attributes, like "required" and type="email" -->
