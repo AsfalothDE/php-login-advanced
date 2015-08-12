@@ -5,10 +5,10 @@
 <!-- edit form for username / this form uses HTML5 attributes, like "required" and type="email" -->
 <form method="post" action="?edit">
 	<label for="user_name"><?php echo WORDING_NEW_USERNAME; ?></label>
-	<input id="user_name" type="text" name="user_name" pattern="[a-zA-Z0-9]{2,64}" value="<?php htmlspecialchars($_SESSION['user_name']); ?>" required <?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
+	<input id="user_name" type="text" name="user_name" pattern="[a-zA-Z0-9]{2,64}" value="<?php echo htmlspecialchars($_SESSION['user_name']); ?>" required <?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
 
 	<label for="user_realname"><?php echo WORDING_NEW_REALUSERNAME; ?></label>
-	<input id="user_realname" type="text" name="user_realname" value="<?php htmlspecialchars($_SESSION['user_realname']); ?>"<?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
+	<input id="user_realname" type="text" name="user_realname" value="<?php echo htmlspecialchars($_SESSION['user_realname']); ?>"<?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
 
 	<input type="submit" name="user_edit_submit_name" value="<?php echo WORDING_CHANGE_USERNAME; ?>" />
 </form><hr/>
@@ -16,7 +16,7 @@
 <!-- edit form for user email / this form uses HTML5 attributes, like "required" and type="email" -->
 <form method="post" action="?edit">
 	<label for="user_email"><?php echo WORDING_NEW_EMAIL; ?></label>
-	<input id="user_email" type="email" name="user_email" value="<?php htmlspecialchars($_SESSION['user_email']); ?>" required />
+	<input id="user_email" type="email" name="user_email" value="<?php echo htmlspecialchars($_SESSION['user_email']); ?>" required />
 	<input type="submit" name="user_edit_submit_email" value="<?php echo WORDING_CHANGE_EMAIL; ?>" />
 </form><hr/>
 
