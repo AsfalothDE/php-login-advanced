@@ -29,6 +29,7 @@
 	</div>
 </form><hr/>
 
+<?php if (!$_SESSION['oauth']): ?>
 <!-- edit form for user's password / this form uses the HTML5 attribute "required" -->
 <form method="post" action="?edit">
 	<div class="form-group">
@@ -48,3 +49,4 @@
 	</div>
 </form>
 <a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>"><?php echo WORDING_BACK_TO_LOGIN; ?></a>
+<?php endif; ?>
