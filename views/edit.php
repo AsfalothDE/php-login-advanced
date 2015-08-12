@@ -9,7 +9,7 @@
 		<input id="user_name" type="text" name="user_name" class="form-control" pattern="[a-zA-Z0-9]{2,64}" required /> (<?php echo WORDING_CURRENTLY; ?>: <?php echo $_SESSION['user_name']; ?>)
 	</div>
 	<div class="form-group">
-		<input type="submit" name="user_edit_submit_name" class="btn btn-default" value="<?php echo WORDING_CHANGE_USERNAME; ?>" />
+		<button type="submit" name="user_edit_submit_name" class="btn btn-default"><?php echo WORDING_CHANGE_USERNAME; ?></button>
 	</div>
 </form><hr/>
 
@@ -20,7 +20,7 @@
 		<input id="user_email" type="email" name="user_email" class="form-control" required /> (<?php echo WORDING_CURRENTLY; ?>: <?php echo $_SESSION['user_email']; ?>)
 	</div>
 	<div class="form-group">
-		<input type="submit" name="user_edit_submit_email" class="btn btn-default" value="<?php echo WORDING_CHANGE_EMAIL; ?>" />
+		<button type="submit" name="user_edit_submit_email" class="btn btn-default"><?php echo WORDING_CHANGE_EMAIL; ?></button>
 	</div>
 </form><hr/>
 
