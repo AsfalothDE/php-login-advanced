@@ -414,20 +414,20 @@ class PHPLogin{
   /**
    * Logs in with data provided from OAuth provider, registers account if it doesn't exist
    *
-   * @param $user_oauth_uid
+   * @param $oauth_uid
    * @param string $user_name
    * @param string $user_realname
    * @param string $user_email
-   * @param string $user_oauth_provider
-   * @param string $user_oauth_token
+   * @param string $oauth_provider
+   * @param string $oauth_token
    */
-  public function loginWithOAuth($user_oauth_uid, $user_name = '', $user_realname = '', $user_email = '', $user_oauth_provider = '', $user_oauth_token = '') {
-    $result_row = $this->getUserDataFromOAuth($user_oauth_uid);
+  public function loginWithOAuth($oauth_uid, $user_name = '', $user_realname = '', $user_email = '', $oauth_provider = '', $oauth_token = '') {
+    $result_row = $this->getUserDataFromOAuth($oauth_uid);
 
     if (! isset($result_row->user_id)) {
-      $this->registerWithOAuth($user_name, $user_email, $user_realname, $user_oauth_uid, $user_oauth_provider, $user_oauth_token);
+      $this->registerWithOAuth($user_name, $user_email, $user_realname, $oauth_uid, $oauth_provider, $oauth_token);
       if ($this->isRegistrationSuccessful()) {
-        $this->loginWithOAuth($user_oauth_uid);
+        //$this->loginWithOAuth($oauth_uid);
       }
     } else if ($result_row->user_active != 1) {
       $this->errors[] = MESSAGE_ACCOUNT_NOT_ACTIVATED;
@@ -917,8 +917,8 @@ class PHPLogin{
     // write new users data into database
     $query_new_user_insert = $this->db_connection->prepare('INSERT INTO ' . $this->config->DB_TABLE_USER . ' (user_name, user_email, user_realname, user_registration_ip, user_registration_datetime, user_oauth_uid, user_oauth_provider, user_oauth_token) VALUES(:user_name, :user_email, :user_realname, :user_registration_ip, now(), :user_oauth_uid, :user_oauth_provider, :user_oauth_token)');
     $query_new_user_insert->bindValue(':user_name', $user_name, PDO::PARAM_STR);
-    $query_new_user_insert->bindValue(':user_realname', $user_name, PDO::PARAM_STR);
     $query_new_user_insert->bindValue(':user_email', $user_email, PDO::PARAM_STR);
+    $query_new_user_insert->bindValue(':user_realname', $user_realname, PDO::PARAM_STR);
     $query_new_user_insert->bindValue(':user_registration_ip', $_SERVER['REMOTE_ADDR'], PDO::PARAM_STR);
     $query_new_user_insert->bindValue(':user_oauth_uid', $oauth_uid, PDO::PARAM_STR);
     $query_new_user_insert->bindValue(':user_oauth_provider', $oauth_provider, PDO::PARAM_STR);
