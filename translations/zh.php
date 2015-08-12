@@ -63,6 +63,7 @@ define("WORDING_NEW_EMAIL", "新電子郵件地址");
 define("WORDING_NEW_PASSWORD", "新密碼");
 define("WORDING_NEW_PASSWORD_REPEAT", "重新輸入新密碼");
 define("WORDING_NEW_USERNAME", "New username (username cannot be empty and must be azAZ09 and 2-64 characters)");
+define("WORDING_NEW_REALUSERNAME", "Your real name");
 define("WORDING_OLD_PASSWORD", "舊密碼");
 define("WORDING_PASSWORD", "密碼");
 define("WORDING_PROFILE_PICTURE", "你的用戶圖片（從gravatar取得）：");

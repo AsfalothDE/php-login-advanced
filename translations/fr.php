@@ -63,6 +63,7 @@ define("WORDING_NEW_EMAIL", "Nouvelle adresse email");
 define("WORDING_NEW_PASSWORD", "Nouveau mot de passe");
 define("WORDING_NEW_PASSWORD_REPEAT", "Repéter le nouveau mot de passe");
 define("WORDING_NEW_USERNAME", "Nouveau nom d'utilisateur (seul les lettres a-Z et les chiffres sont autorisés, longueur de 2 à 64 caractères)");
+define("WORDING_NEW_REALUSERNAME", "Your real name");
 define("WORDING_OLD_PASSWORD", "Ancien mot de passe");
 define("WORDING_PASSWORD", "Mot de passe");
 define("WORDING_PROFILE_PICTURE", "Photo de profil (depuis gravatar) :");

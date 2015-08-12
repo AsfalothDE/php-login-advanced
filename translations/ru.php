@@ -63,6 +63,7 @@ define('WORDING_NEW_EMAIL', 'Новое письмо');
 define('WORDING_NEW_PASSWORD', 'Новый пароль');
 define('WORDING_NEW_PASSWORD_REPEAT', 'Повторить пароль');
 define('WORDING_NEW_USERNAME', 'Новый ник (ник должен сожержать латинские символы и цифры и быть блинной 2-64 символов)');
+define("WORDING_NEW_REALUSERNAME", "Your real name");
 define('WORDING_OLD_PASSWORD', 'Ваш старый пароль');
 define('WORDING_PASSWORD', 'Пароль');
 define('WORDING_PROFILE_PICTURE', 'Ваше изображение (Gravatar):');
