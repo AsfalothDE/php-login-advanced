@@ -201,6 +201,27 @@ class PHPLogin{
   }
 
   /**
+   * Search user data from OAuth uid
+   *
+   * @param $oauth_uid
+   * @return bool
+   * @private
+   */
+  private function getUserDataFromOAuth($oauth_uid) {
+    // if database connection opened
+    if ($this->databaseConnection()) {
+      // database query, getting all the info of the selected user
+      $query_user = $this->db_connection->prepare('SELECT * FROM ' . $this->config->DB_TABLE_USER . ' WHERE user_oauth_uid = :user_oauth_uid');
+      $query_user->bindValue(':user_oauth_uid', $oauth_uid, PDO::PARAM_STR);
+      $query_user->execute();
+      // get result row (as an object)
+      return $query_user->fetchObject();
+    } else {
+      return false;
+    }
+  }
+
+  /**
    * Crypt the $password with the PHP 5.5's password_hash()
    * @return 60 character hash password string
    */
@@ -262,7 +283,7 @@ class PHPLogin{
         // cookie looks good, try to select corresponding user
         if ($this->databaseConnection()) {
           // get real token from database (and all other data)
-          $sth = $this->db_connection->prepare("SELECT u.user_id, u.user_name, u.user_email, u.user_access_level FROM " . $this->config->DB_TABLE_CONNECTIONS . " uc
+          $sth = $this->db_connection->prepare("SELECT u.user_id, u.user_name, u.user_realname, u.user_email, u.user_access_level FROM " . $this->config->DB_TABLE_CONNECTIONS . " uc
                                                 LEFT JOIN " . $this->config->DB_TABLE_USER . " u ON uc.user_id = u.user_id WHERE uc.user_id = :user_id
                                                 AND uc.user_rememberme_token = :user_rememberme_token AND uc.user_rememberme_token IS NOT NULL");
           $sth->bindValue(':user_id', $user_id, PDO::PARAM_INT);
@@ -275,9 +296,11 @@ class PHPLogin{
             // write user data into PHP SESSION [a file on your server]
             $_SESSION['user_id'] = $result_row->user_id;
             $_SESSION['user_name'] = $result_row->user_name;
+            $_SESSION['user_realname'] = $result_row->user_realname;
             $_SESSION['user_email'] = $result_row->user_email;
             $_SESSION['user_access_level'] = $result_row->user_access_level;
             $_SESSION['user_logged_in'] = 1;
+            $_SESSION['oauth'] = 0;
 
             // Cookie token usable only once
             $this->newRememberMeCookie($token);
@@ -342,9 +365,11 @@ class PHPLogin{
         // write user data into PHP SESSION [a file on your server]
         $_SESSION['user_id'] = $result_row->user_id;
         $_SESSION['user_name'] = $result_row->user_name;
+        $_SESSION['user_realname'] = $result_row->user_realname;
         $_SESSION['user_email'] = $result_row->user_email;
         $_SESSION['user_access_level'] = $result_row->user_access_level;
         $_SESSION['user_logged_in'] = 1;
+        $_SESSION['oauth'] = 0;
 
         // reset the failed login counter for that user
         $sth = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' '
@@ -382,6 +407,38 @@ class PHPLogin{
           }
         }
       }
+    }
+  }
+
+
+  /**
+   * Logs in with data provided from OAuth provider, registers account if it doesn't exist
+   *
+   * @param $user_oauth_uid
+   * @param string $user_name
+   * @param string $user_realname
+   * @param string $user_email
+   * @param string $user_oauth_provider
+   * @param string $user_oauth_token
+   */
+  public function loginWithOAuth($user_oauth_uid, $user_name = '', $user_realname = '', $user_email = '', $user_oauth_provider = '', $user_oauth_token = '') {
+    $result_row = $this->getUserDataFromOAuth($user_oauth_uid);
+
+    if (! isset($result_row->user_id)) {
+      $this->registerWithOAuth($user_name, $user_email, $user_realname, $user_oauth_uid, $user_oauth_provider, $user_oauth_token);
+      if ($this->isRegistrationSuccessful()) {
+        $this->loginWithOAuth($user_oauth_uid);
+      }
+    } else if ($result_row->user_active != 1) {
+      $this->errors[] = MESSAGE_ACCOUNT_NOT_ACTIVATED;
+    } else {
+      $_SESSION['user_id'] = $result_row->user_id;
+      $_SESSION['user_name'] = $result_row->user_name;
+      $_SESSION['user_realname'] = $result_row->user_realname;
+      $_SESSION['user_email'] = $result_row->user_email;
+      $_SESSION['user_access_level'] = $result_row->user_access_level;
+      $_SESSION['user_logged_in'] = 1;
+      $_SESSION['oauth'] = 1;
     }
   }
 
@@ -843,6 +900,36 @@ class PHPLogin{
           $this->errors[] = MESSAGE_REGISTRATION_FAILED;
         }
       }
+    }
+  }
+
+  /**
+   * Register user via OAuth
+   *
+   * @param $user_name
+   * @param $user_email
+   * @param $oauth_uid
+   * @param $oauth_provider
+   * @param $oauth_token
+   * @private
+   */
+  private function registerWithOAuth($user_name, $user_email, $user_realname, $oauth_uid, $oauth_provider, $oauth_token) {
+    // write new users data into database
+    $query_new_user_insert = $this->db_connection->prepare('INSERT INTO ' . $this->config->DB_TABLE_USER . ' (user_name, user_email, user_realname, user_registration_ip, user_registration_datetime, user_oauth_uid, user_oauth_provider, user_oauth_token) VALUES(:user_name, :user_email, :user_realname, :user_registration_ip, now(), :user_oauth_uid, :user_oauth_provider, :user_oauth_token)');
+    $query_new_user_insert->bindValue(':user_name', $user_name, PDO::PARAM_STR);
+    $query_new_user_insert->bindValue(':user_realname', $user_name, PDO::PARAM_STR);
+    $query_new_user_insert->bindValue(':user_email', $user_email, PDO::PARAM_STR);
+    $query_new_user_insert->bindValue(':user_registration_ip', $_SERVER['REMOTE_ADDR'], PDO::PARAM_STR);
+    $query_new_user_insert->bindValue(':user_oauth_uid', $oauth_uid, PDO::PARAM_STR);
+    $query_new_user_insert->bindValue(':user_oauth_provider', $oauth_provider, PDO::PARAM_STR);
+    $query_new_user_insert->bindValue(':user_oauth_token', $oauth_token, PDO::PARAM_STR);
+    $query_new_user_insert->execute();
+
+    // id of new user
+    $user_id = $this->db_connection->lastInsertId();
+
+    if ($query_new_user_insert) {
+      $this->registration_successful = true;
     }
   }
 
