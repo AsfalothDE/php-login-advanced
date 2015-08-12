@@ -99,13 +99,13 @@ class PHPLogin{
       $this->doLogout();
 
     // if user has an active session on the server
-    } elseif (!empty($_SESSION['user_name']) && ($_SESSION['user_logged_in'] == 1)) {
+    } elseif ($this->isUserLoggedIn()) {
 
       // checking for form submit from editing screen
       // user try to change his username
       if (isset($_POST["user_edit_submit_name"])) {
         // function below uses $_SESSION['user_id'] et $_SESSION['user_email']
-        $this->editUserName($_POST['user_name']);
+        $this->editUserName($_POST['user_name'], $_POST['user_realname']);
       // user try to change his email
       } elseif (isset($_POST["user_edit_submit_email"])) {
         // function below uses $_SESSION['user_id'] et $_SESSION['user_email']
@@ -295,7 +295,7 @@ class PHPLogin{
           if (isset($result_row->user_id)) {
             // write user data into PHP SESSION [a file on your server]
             $_SESSION['user_id'] = $result_row->user_id;
-            $_SESSION['user_name'] = $result_row->user_name ? $result_row->user_name : $result_row->user_realname;
+            $_SESSION['user_name'] = $result_row->user_name;
             $_SESSION['user_realname'] = $result_row->user_realname ? $result_row->user_realname : $result_row->user_name;
             $_SESSION['user_email'] = $result_row->user_email;
             $_SESSION['user_access_level'] = $result_row->user_access_level;
@@ -364,7 +364,7 @@ class PHPLogin{
       } else {
         // write user data into PHP SESSION [a file on your server]
         $_SESSION['user_id'] = $result_row->user_id;
-        $_SESSION['user_name'] = $result_row->user_name ? $result_row->user_name : $result_row->user_realname;
+        $_SESSION['user_name'] = $result_row->user_name;
         $_SESSION['user_realname'] = $result_row->user_realname ? $result_row->user_realname : $result_row->user_name;
         $_SESSION['user_email'] = $result_row->user_email;
         $_SESSION['user_access_level'] = $result_row->user_access_level;
@@ -433,7 +433,7 @@ class PHPLogin{
       $this->errors[] = MESSAGE_ACCOUNT_NOT_ACTIVATED;
     } else {
       $_SESSION['user_id'] = $result_row->user_id;
-      $_SESSION['user_name'] = $result_row->user_name ? $result_row->user_name : $result_row->user_realname;
+      $_SESSION['user_name'] = $result_row->user_name;
       $_SESSION['user_realname'] = $result_row->user_realname ? $result_row->user_realname : $result_row->user_name;
       $_SESSION['user_email'] = $result_row->user_email;
       $_SESSION['user_access_level'] = $result_row->user_access_level;
@@ -526,27 +526,27 @@ class PHPLogin{
   /**
    * Edit the user's name, provided in the editing form
    */
-  public function editUserName($user_name) {
+  public function editUserName($user_name, $user_realname) {
     // prevent database flooding
     $user_name = substr(trim($user_name), 0, 64);
-    if (!empty($user_name) && $user_name == $_SESSION['user_name']) {
-        $this->errors[] = MESSAGE_USERNAME_SAME_LIKE_OLD_ONE;
     // username cannot be empty and must be azAZ09 and 2-64 characters
-    } elseif (empty($user_name) || !preg_match('/^[a-zA-Z0-9]{2,64}$/', $user_name)) {
+    if (empty($user_name) || !preg_match('/^[a-zA-Z0-9]{2,64}$/', $user_name)) {
         $this->errors[] = MESSAGE_USERNAME_INVALID;
     } else {
       // check if new username already exists
       $result_row = $this->getUserData($user_name);
-      if (isset($result_row->user_id)) {
+      if (isset($result_row->user_id) && $result_row->user_id != $_SESSION['user_id']) {
         $this->errors[] = MESSAGE_USERNAME_EXISTS;
       } else {
         // write user's new data into database
-        $query_edit_user_name = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_name = :user_name WHERE user_id = :user_id');
+        $query_edit_user_name = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_name = :user_name, user_realname = :user_realname WHERE user_id = :user_id');
         $query_edit_user_name->bindValue(':user_name', $user_name, PDO::PARAM_STR);
+        $query_edit_user_name->bindValue(':user_realname', $user_realname, PDO::PARAM_STR);
         $query_edit_user_name->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $query_edit_user_name->execute();
         if ($query_edit_user_name->rowCount()) {
           $_SESSION['user_name'] = $user_name;
+          $_SESSION['user_realname'] = $user_realname ? $user_realname : $user_name;
           $this->messages[] = MESSAGE_USERNAME_CHANGED_SUCCESSFULLY . $user_name;
         } else {
           $this->errors[] = MESSAGE_USERNAME_CHANGE_FAILED;
