@@ -20,6 +20,7 @@
 	<input type="submit" name="user_edit_submit_email" value="<?php echo WORDING_CHANGE_EMAIL; ?>" />
 </form><hr/>
 
+<?php if (!$_SESSION['oauth']): ?>
 <!-- edit form for user's password / this form uses the HTML5 attribute "required" -->
 <form method="post" action="?edit">
 	<label for="user_password_old"><?php echo WORDING_OLD_PASSWORD; ?></label>
@@ -34,3 +35,4 @@
 	<input type="submit" name="user_edit_submit_password" value="<?php echo WORDING_CHANGE_PASSWORD; ?>" />
 </form>
 <a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>"><?php echo WORDING_BACK_TO_LOGIN; ?></a>
+<?php endif; ?>
