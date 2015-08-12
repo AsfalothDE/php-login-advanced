@@ -63,6 +63,7 @@ define("WORDING_NEW_EMAIL", "Nuevo correo electrónico");
 define("WORDING_NEW_PASSWORD", "Nueva contraseña");
 define("WORDING_NEW_PASSWORD_REPEAT", "Repita su nueva contraseña");
 define("WORDING_NEW_USERNAME", "Nuevo nombre de usuario (debe tener entre 2 y 64 caracteres y estar formado únicamente por letras (a-Z) y números)");
+define("WORDING_NEW_REALUSERNAME", "Your real name");
 define("WORDING_OLD_PASSWORD", "Su antigua contraseña");
 define("WORDING_PASSWORD", "Contraseña");
 define("WORDING_PROFILE_PICTURE", "Su imagen de perfil (de Gravatar):");

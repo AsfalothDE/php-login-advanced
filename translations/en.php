@@ -59,10 +59,11 @@ define("WORDING_EDIT_YOUR_CREDENTIALS", "You are logged in and can edit your cre
 define("WORDING_FORGOT_MY_PASSWORD", "I forgot my password");
 define("WORDING_LOGIN", "Log in");
 define("WORDING_LOGOUT", "Log out");
-define("WORDING_NEW_EMAIL", "New email");
+define("WORDING_NEW_EMAIL", "Your email");
 define("WORDING_NEW_PASSWORD", "New password");
 define("WORDING_NEW_PASSWORD_REPEAT", "Repeat new password");
-define("WORDING_NEW_USERNAME", "New username (username cannot be empty and must be azAZ09 and 2-64 characters)");
+define("WORDING_NEW_USERNAME", "Your username (username cannot be empty and must be azAZ09 and 2-64 characters)");
+define("WORDING_NEW_REALUSERNAME", "Your real name");
 define("WORDING_OLD_PASSWORD", "Your OLD Password");
 define("WORDING_PASSWORD", "Password");
 define("WORDING_PROFILE_PICTURE", "Your profile picture (from gravatar):");

@@ -7,11 +7,11 @@
 <form method="post" action="?edit">
 	<div class="form-group">
 		<label for="user_name" class="control-label"><?php echo WORDING_NEW_USERNAME; ?></label>
-		<input id="user_name" type="text" name="user_name" class="form-control" pattern="[a-zA-Z0-9]{2,64}" value="<?php htmlspecialchars($_SESSION['user_name']); ?>" required <?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> /> (<?php echo WORDING_CURRENTLY; ?>: <?php echo $_SESSION['user_name']; ?>)
+		<input id="user_name" type="text" name="user_name" class="form-control" pattern="[a-zA-Z0-9]{2,64}" value="<?php htmlspecialchars($_SESSION['user_name']); ?>" required <?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
 	</div>
 	<div class="form-group">
-		<label for="user_realname" class="control-label"><?php echo WORDING_NEW_USERNAME; ?></label>
-		<input id="user_realname" type="text" name="user_realname" class="form-control" value="<?php htmlspecialchars($_SESSION['user_realname']); ?>"<?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> /> (<?php echo WORDING_CURRENTLY; ?>: <?php echo $_SESSION['user_realname']; ?>)
+		<label for="user_realname" class="control-label"><?php echo WORDING_NEW_REALUSERNAME; ?></label>
+		<input id="user_realname" type="text" name="user_realname" class="form-control" value="<?php htmlspecialchars($_SESSION['user_realname']); ?>"<?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
 	</div>
 	<div class="form-group">
 		<button type="submit" name="user_edit_submit_name" class="btn btn-default"><?php echo WORDING_CHANGE_USERNAME; ?></button>
@@ -22,7 +22,7 @@
 <form method="post" action="?edit">
 	<div class="form-group">
 		<label for="user_email" class="control-label"><?php echo WORDING_NEW_EMAIL; ?></label>
-		<input id="user_email" type="email" name="user_email" class="form-control" required /> (<?php echo WORDING_CURRENTLY; ?>: <?php echo $_SESSION['user_email']; ?>)
+		<input id="user_email" type="email" name="user_email" class="form-control" value="<?php htmlspecialchars($_SESSION['user_email']); ?>" required />
 	</div>
 	<div class="form-group">
 		<button type="submit" name="user_edit_submit_email" class="btn btn-default"><?php echo WORDING_CHANGE_EMAIL; ?></button>
