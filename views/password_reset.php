@@ -14,7 +14,7 @@
 			<input id="user_password_repeat" type="password" class="form-control" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" />
 		</div>
 		<div class="form-group">
-			<button type="submit" name="submit_new_password" class="btn btn-default"><?php echo WORDING_SUBMIT_NEW_PASSWORD; ?>"</button>
+			<button type="submit" name="submit_new_password" class="btn btn-default"><?php echo WORDING_SUBMIT_NEW_PASSWORD; ?></button>
 		</div>
 </form>
 <a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>"><?php echo WORDING_BACK_TO_LOGIN; ?></a>
