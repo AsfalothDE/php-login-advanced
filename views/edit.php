@@ -1,3 +1,4 @@
+
 <h2><?php echo WORDING_EDIT_USER_DATA; ?></h2>
 <hr/>
 <h3><?php echo $_SESSION['user_name']; ?> <?php echo WORDING_EDIT_YOUR_CREDENTIALS; ?></h3>
@@ -6,7 +7,11 @@
 <form method="post" action="?edit">
 	<div class="form-group">
 		<label for="user_name" class="control-label"><?php echo WORDING_NEW_USERNAME; ?></label>
-		<input id="user_name" type="text" name="user_name" class="form-control" pattern="[a-zA-Z0-9]{2,64}" required /> (<?php echo WORDING_CURRENTLY; ?>: <?php echo $_SESSION['user_name']; ?>)
+		<input id="user_name" type="text" name="user_name" class="form-control" pattern="[a-zA-Z0-9]{2,64}" value="<?php htmlspecialchars($_SESSION['user_name']); ?>" required <?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> /> (<?php echo WORDING_CURRENTLY; ?>: <?php echo $_SESSION['user_name']; ?>)
+	</div>
+	<div class="form-group">
+		<label for="user_realname" class="control-label"><?php echo WORDING_NEW_USERNAME; ?></label>
+		<input id="user_realname" type="text" name="user_realname" class="form-control" value="<?php htmlspecialchars($_SESSION['user_realname']); ?>"<?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> /> (<?php echo WORDING_CURRENTLY; ?>: <?php echo $_SESSION['user_realname']; ?>)
 	</div>
 	<div class="form-group">
 		<button type="submit" name="user_edit_submit_name" class="btn btn-default"><?php echo WORDING_CHANGE_USERNAME; ?></button>
