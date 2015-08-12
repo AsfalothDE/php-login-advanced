@@ -1,19 +1,19 @@
 <h2><?php echo WORDING_REGISTER; ?></h2>
 <form method="post" action="?register">
     <div class="form-group">
-        <label for="user_name"><?php echo WORDING_REGISTRATION_USERNAME; ?></label>
+        <label for="user_name" class="control-label"><?php echo WORDING_REGISTRATION_USERNAME; ?></label>
         <input id="user_name" class="form-control" type="text" pattern="[a-zA-Z0-9]{2,64}" name="user_name" value="<?php echo (isset($_POST['user_name']) ? htmlspecialchars($_POST['user_name']) : ''); ?>" required autofocus/>
     </div>
     <div class="form-group">
-        <label for="user_email"><?php echo WORDING_REGISTRATION_EMAIL; ?></label>
+        <label for="user_email" class="control-label"><?php echo WORDING_REGISTRATION_EMAIL; ?></label>
         <input id="user_email" class="form-control" type="email" name="user_email" value="<?php echo (isset($_POST['user_email']) ? htmlspecialchars($_POST['user_email']) : ''); ?>" required />
     </div>
     <div class="form-group">
-        <label for="user_password_new"><?php echo WORDING_REGISTRATION_PASSWORD; ?></label>
+        <label for="user_password_new" class="control-label"><?php echo WORDING_REGISTRATION_PASSWORD; ?></label>
         <input id="user_password_new" class="form-control" type="password" name="user_password_new" pattern=".{6,}" required autocomplete="off" />
     </div>
     <div class="form-group">
-        <label for="user_password_repeat"><?php echo WORDING_REGISTRATION_PASSWORD_REPEAT; ?></label>
+        <label for="user_password_repeat" class="control-label"><?php echo WORDING_REGISTRATION_PASSWORD_REPEAT; ?></label>
         <input id="user_password_repeat" class="form-control" type="password" name="user_password_repeat" pattern=".{6,}" required autocomplete="off" />
     </div>
     <div class="form-group">
