@@ -7,7 +7,8 @@
 <p>$_SESSION['user_fullname'] = <?php print_r($_SESSION['user_fullname']); ?></p>
 <p>$_SESSION['user_email'] = <?php echo $_SESSION['user_email']; ?></p>
 <p>$_SESSION['user_access_level'] = <?php echo $_SESSION['user_access_level']; ?></p>
-<p>$_SESSION['user_logged_in'] = <?php echo $_SESSION['user_logged_in']; ?></p><hr/>
+<p>$_SESSION['user_logged_in'] = <?php echo $_SESSION['user_logged_in']; ?></p>
+<p>$_SESSION['oauth_provider'] = <?php echo $_SESSION['oauth_provider']; ?></p><hr/>
 
 <p><?php echo WORDING_PROFILE_PICTURE . '<br/><img src="' . $login->getGravatarImageUrl() ; ?>" /></p>
 <a href="?logout"><?php echo WORDING_LOGOUT; ?></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="?edit"><?php echo WORDING_EDIT_USER_DATA; ?></a>
