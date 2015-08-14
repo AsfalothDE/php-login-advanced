@@ -18,7 +18,7 @@
 		<input id="user_lastname" type="text" name="user_lastname" class="form-control" value="<?php echo htmlspecialchars($_SESSION['user_fullname'][1]); ?>" required />
 	</div>
 	<div class="form-group">
-		<button type="submit" name="user_edit_submit_name" class="btn btn-default <?php if ($_SESSION['oauth']): ?> btn-disabled<?php endif; ?>"<?php if ($_SESSION['oauth']): ?> disabled<?php endif; ?>><?php echo WORDING_CHANGE_USERNAME; ?></button>
+		<button type="submit" name="user_edit_submit_name" class="btn btn-default"><?php echo WORDING_CHANGE_USERNAME; ?></button>
 	</div>
 </form><hr/>
 

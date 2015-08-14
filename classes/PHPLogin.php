@@ -530,31 +530,34 @@ class PHPLogin{
     // prevent database flooding
     $user_name = substr(trim($user_name), 0, 64);
     // username cannot be empty and must be azAZ09 and 2-64 characters
-    if (empty($user_name) || !preg_match('/^[a-zA-Z0-9]{2,64}$/', $user_name)) {
+    if (!$_SESSION['oauth'] && (empty($user_name) || !preg_match('/^[a-zA-Z0-9]{2,64}$/', $user_name))) {
         $this->errors[] = MESSAGE_USERNAME_INVALID;
-    } elseif (empty($user_firstname) || empty($user_lastname)) {
+        return;
+    }
+    if (empty($user_firstname) || empty($user_lastname)) {
       $this->errors[] = MESSAGE_FULLNAME_INVALID;
+      return;
+    }
+
+    // check if new username already exists
+    $result_row = $this->getUserData($user_name);
+    if (isset($result_row->user_id) && $result_row->user_id != $_SESSION['user_id']) {
+      $this->errors[] = MESSAGE_USERNAME_EXISTS;
     } else {
-      // check if new username already exists
-      $result_row = $this->getUserData($user_name);
-      if (isset($result_row->user_id) && $result_row->user_id != $_SESSION['user_id']) {
-        $this->errors[] = MESSAGE_USERNAME_EXISTS;
+      // write user's new data into database
+      $query_edit_user_name = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_name = :user_name, user_fullname = :user_fullname, user_firstname = :user_firstname, user_lastname = :user_lastname WHERE user_id = :user_id');
+      $query_edit_user_name->bindValue(':user_name', $user_name, PDO::PARAM_STR);
+      $query_edit_user_name->bindValue(':user_fullname', $user_firstname . ' ' . $user_lastname, PDO::PARAM_STR);
+      $query_edit_user_name->bindValue(':user_firstname', $user_firstname, PDO::PARAM_STR);
+      $query_edit_user_name->bindValue(':user_lastname', $user_lastname, PDO::PARAM_STR);
+      $query_edit_user_name->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+      $query_edit_user_name->execute();
+      if ($query_edit_user_name->rowCount()) {
+        $_SESSION['user_name'] = $user_name;
+        $_SESSION['user_fullname'] = array($user_firstname, $user_lastname);
+        $this->messages[] = MESSAGE_USERNAME_CHANGED_SUCCESSFULLY . $user_name;
       } else {
-        // write user's new data into database
-        $query_edit_user_name = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_name = :user_name, user_fullname = :user_fullname, user_firstname = :user_firstname, user_lastname = :user_lastname WHERE user_id = :user_id');
-        $query_edit_user_name->bindValue(':user_name', $user_name, PDO::PARAM_STR);
-        $query_edit_user_name->bindValue(':user_fullname', $user_firstname . ' ' . $user_lastname, PDO::PARAM_STR);
-        $query_edit_user_name->bindValue(':user_firstname', $user_firstname, PDO::PARAM_STR);
-        $query_edit_user_name->bindValue(':user_lastname', $user_lastname, PDO::PARAM_STR);
-        $query_edit_user_name->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
-        $query_edit_user_name->execute();
-        if ($query_edit_user_name->rowCount()) {
-          $_SESSION['user_name'] = $user_name;
-          $_SESSION['user_fullname'] = array($user_firstname, $user_lastname);
-          $this->messages[] = MESSAGE_USERNAME_CHANGED_SUCCESSFULLY . $user_name;
-        } else {
-          $this->errors[] = MESSAGE_USERNAME_CHANGE_FAILED;
-        }
+        $this->errors[] = MESSAGE_USERNAME_CHANGE_FAILED;
       }
     }
   }
