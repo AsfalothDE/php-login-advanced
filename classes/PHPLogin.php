@@ -283,7 +283,7 @@ class PHPLogin{
         // cookie looks good, try to select corresponding user
         if ($this->databaseConnection()) {
           // get real token from database (and all other data)
-          $sth = $this->db_connection->prepare("SELECT u.user_id, u.user_name, u.user_firstname, u.user_lastname, u.user_email, u.user_access_level FROM " . $this->config->DB_TABLE_CONNECTIONS . " uc
+          $sth = $this->db_connection->prepare("SELECT u.user_id, u.user_name, u.user_firstname, u.user_lastname, u.user_email, u.user_access_level, u.oauth_provider FROM " . $this->config->DB_TABLE_CONNECTIONS . " uc
                                                 LEFT JOIN " . $this->config->DB_TABLE_USER . " u ON uc.user_id = u.user_id WHERE uc.user_id = :user_id
                                                 AND uc.user_rememberme_token = :user_rememberme_token AND uc.user_rememberme_token IS NOT NULL");
           $sth->bindValue(':user_id', $user_id, PDO::PARAM_INT);
@@ -301,6 +301,7 @@ class PHPLogin{
             $_SESSION['user_access_level'] = $result_row->user_access_level;
             $_SESSION['user_logged_in'] = 1;
             $_SESSION['oauth'] = 0;
+            $_SESSION['oauth_provider'] = $result_row->oauth_provider;
 
             // Cookie token usable only once
             $this->newRememberMeCookie($token);
@@ -370,6 +371,7 @@ class PHPLogin{
         $_SESSION['user_access_level'] = $result_row->user_access_level;
         $_SESSION['user_logged_in'] = 1;
         $_SESSION['oauth'] = 0;
+        $_SESSION['oauth_provider'] = $result_row->oauth_provider;
 
         // reset the failed login counter for that user
         $sth = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' '
@@ -439,6 +441,7 @@ class PHPLogin{
       $_SESSION['user_access_level'] = $result_row->user_access_level;
       $_SESSION['user_logged_in'] = 1;
       $_SESSION['oauth'] = 1;
+      $_SESSION['oauth_provider'] = $result_row->oauth_provider;
     }
   }
 
