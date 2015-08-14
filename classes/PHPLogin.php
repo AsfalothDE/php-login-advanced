@@ -65,7 +65,7 @@ class PHPLogin{
     // detection of the language for the current user/browser
     $user_lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
     // if translation file for the detected language doesn't exist, we use default english file
-    require_once(dirname( __FILE__ ).'/../translations/' . (file_exists(dirname( __FILE__ ).'/../translations/' . $user_lang . '.php') ? $user_lang : 'en') . '.php');
+    require_once($this->config->PATH_TO_TRANSLATIONS . '/' . (file_exists($this->config->PATH_TO_TRANSLATIONS . '/' . $user_lang . '.php') ? $user_lang : 'en') . '.php');
     
     // create/read session
     @session_start();

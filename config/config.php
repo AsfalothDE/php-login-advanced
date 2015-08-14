@@ -141,5 +141,8 @@ return array(
    * save the file and this is all set up
    */
   'RECAPTCHA_SITEKEY' => 'Your site key',
-  'RECAPTCHA_SECRETKEY' => 'Your secret key'
+  'RECAPTCHA_SECRETKEY' => 'Your secret key',
+
+  'PATH_TO_TRANSLATIONS' => dirname( __FILE__ ).'/../translations',
+  'PATH_TO_VIEWS' => dirname( __FILE__ ).'/../views'
 );
