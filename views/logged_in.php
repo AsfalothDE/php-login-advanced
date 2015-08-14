@@ -8,6 +8,7 @@
 <p>$_SESSION['user_access_level'] = <?php echo $_SESSION['user_access_level']; ?></p>
 <p>$_SESSION['user_logged_in'] = <?php echo $_SESSION['user_logged_in']; ?></p>
 <p>$_SESSION['oauth'] = <?php echo $_SESSION['oauth']; ?></p>
+<p>$_SESSION['oauth_provider'] = <?php echo $_SESSION['oauth_provider']; ?></p>
 <hr/>
 
 <p><?php echo WORDING_PROFILE_PICTURE . '<br/><img src="' . $login->getGravatarImageUrl() ; ?>" /></p>
