@@ -81,7 +81,7 @@ class PHPLogin{
     // if we have such a POST request, call the registerNewUser() method
     if (isset($_POST["g-recaptcha-response"]) && isset($_POST["register"]) && ($this->config->ALLOW_USER_REGISTRATION || ($this->config->ALLOW_ADMIN_TO_REGISTER_NEW_USER && $_SESSION['user_access_level'] == 255))) {
        
-      $this->registerNewUser($_POST['user_name'], $_POST['user_firstname'], $_POST['user_lastname'], $_POST['user_email'], $_POST['user_password_new'], $_POST['user_password_repeat'], $_POST["g-recaptcha-response"]);
+      $this->registerNewUser($_POST['user_email'], $_POST['user_firstname'], $_POST['user_lastname'], $_POST['user_email'], $_POST['user_password_new'], $_POST['user_password_repeat'], $_POST["g-recaptcha-response"]);
     // if we have such a GET request, call the verifyNewUser() method
     } else if (isset($_GET["id"]) && isset($_GET["verification_code"])) {
       $this->verifyNewUser($_GET["id"], $_GET["verification_code"]);
@@ -533,10 +533,10 @@ class PHPLogin{
     // prevent database flooding
     $user_name = substr(trim($user_name), 0, 64);
     // username cannot be empty and must be azAZ09 and 2-64 characters
-    if (!$_SESSION['oauth'] && (empty($user_name) || !preg_match('/^[a-zA-Z0-9]{2,64}$/', $user_name))) {
+    /*if (!$_SESSION['oauth'] && (empty($user_name) || !preg_match('/^[a-zA-Z0-9]{2,64}$/', $user_name))) {
         $this->errors[] = MESSAGE_USERNAME_INVALID;
         return;
-    }
+    }*/
     if (empty($user_firstname) || empty($user_lastname)) {
       $this->errors[] = MESSAGE_FULLNAME_INVALID;
       return;
@@ -587,13 +587,14 @@ class PHPLogin{
         $this->errors[] = MESSAGE_EMAIL_ALREADY_EXISTS;
       } else {
         // write users new data into database
-        $query_edit_user_email = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_email = :user_email WHERE user_id = :user_id');
+        $query_edit_user_email = $this->db_connection->prepare('UPDATE ' . $this->config->DB_TABLE_USER . ' SET user_email = :user_email, user_name = :user_email WHERE user_id = :user_id');
         $query_edit_user_email->bindValue(':user_email', $user_email, PDO::PARAM_STR);
         $query_edit_user_email->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
         $query_edit_user_email->execute();
 
         if ($query_edit_user_email->rowCount()) {
           $_SESSION['user_email'] = $user_email;
+          $_SESSION['user_name'] = $user_email;
           $this->messages[] = MESSAGE_EMAIL_CHANGED_SUCCESSFULLY . $user_email;
         } else {
           $this->errors[] = MESSAGE_EMAIL_CHANGE_FAILED;
@@ -850,10 +851,10 @@ class PHPLogin{
       ($this->errors[] = MESSAGE_PASSWORD_BAD_CONFIRM);
     } elseif (strlen($user_password) < 6) {
       ($this->errors[] = MESSAGE_PASSWORD_TOO_SHORT);
-    } elseif (strlen($user_name) > 64 || strlen($user_name) < 2) {
+    /*} elseif (strlen($user_name) > 64 || strlen($user_name) < 2) {
       ($this->errors[] = MESSAGE_USERNAME_BAD_LENGTH);
     } elseif (!preg_match('/^[a-zA-Z0-9]{2,64}$/', $user_name)) {
-      ($this->errors[] = MESSAGE_USERNAME_INVALID);
+      ($this->errors[] = MESSAGE_USERNAME_INVALID);*/
     } elseif (empty($user_email)) {
       ($this->errors[] = MESSAGE_EMAIL_EMPTY);
     } elseif (strlen($user_email) > 254) {

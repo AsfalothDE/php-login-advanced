@@ -1,15 +1,11 @@
 <h2><?php echo WORDING_REGISTER; ?></h2>
 <form method="post" action="?register">
-    <div class="form-group">
-        <label for="user_name" class="control-label"><?php echo WORDING_REGISTRATION_USERNAME; ?></label>
-        <input id="user_name" class="form-control" type="text" pattern="[a-zA-Z0-9]{2,64}" name="user_name" value="<?php echo (isset($_POST['user_name']) ? htmlspecialchars($_POST['user_name']) : ''); ?>" required autofocus/>
-    </div>
 		<div class="form-group">
-			<label for="user_firstname" class="control-label"><?php echo WORDING_REGISTRATION_USERNAME; ?></label>
+			<label for="user_firstname" class="control-label"><?php echo WORDING_NEW_FIRSTNAME; ?></label>
 			<input id="user_firstname" type="text" name="user_firstname" class="form-control" value="<?php echo (isset($_POST['user_firstname']) ? htmlspecialchars($_POST['user_firstname']) : ''); ?>" required/>
 		</div>
 		<div class="form-group">
-			<label for="user_lastname" class="control-label"><?php echo WORDING_REGISTRATION_USERNAME; ?></label>
+			<label for="user_lastname" class="control-label"><?php echo WORDING_NEW_LASTNAME; ?></label>
 			<input id="user_lastname" type="text" name="user_lastname" class="form-control" value="<?php echo (isset($_POST['user_lastname']) ? htmlspecialchars($_POST['user_lastname']) : ''); ?>" required/>
 		</div>
     <div class="form-group">

@@ -1,8 +1,8 @@
 <h2><?php echo WORDING_LOGIN; ?></h2>
-<form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>">
+<form method="post" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>?login">
     <div class="form-group">
-        <label for="user_name" class="sr-only"><?php echo WORDING_USERNAME; ?></label>
-        <input type="text" name="user_name" id="user_name" class="form-control" placeholder="<?php echo WORDING_USERNAME; ?>" required autofocus>
+        <label for="user_name" class="sr-only"><?php echo WORDING_NEW_EMAIL; ?></label>
+        <input type="text" name="user_name" id="user_name" class="form-control" placeholder="<?php echo WORDING_NEW_EMAIL; ?>" required autofocus>
     </div>
     <div class="form-group">
         <label for="user_password" class="sr-only"><?php echo WORDING_PASSWORD; ?></label>

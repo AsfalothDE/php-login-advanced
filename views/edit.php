@@ -5,10 +5,11 @@
 
 <!-- edit form for username / this form uses HTML5 attributes, like "required" and type="email" -->
 <form method="post" action="?edit">
-	<div class="form-group">
+	<!--<div class="form-group">
 		<label for="user_name" class="control-label"><?php echo WORDING_NEW_USERNAME; ?></label>
 		<input id="user_name" type="text" name="user_name" class="form-control" pattern="[a-zA-Z0-9]{2,64}" value="<?php echo htmlspecialchars($_SESSION['user_name']); ?>" required <?php if ($_SESSION['oauth']): ?> readonly<?php endif; ?> />
-	</div>
+	</div>-->
+	<input type="hidden" name="user_name" value="<?php echo htmlspecialchars($_SESSION['user_email']); ?>">
 	<div class="form-group">
 		<label for="user_firstname" class="control-label"><?php echo WORDING_NEW_FIRSTNAME; ?></label>
 		<input id="user_firstname" type="text" name="user_firstname" class="form-control" value="<?php echo htmlspecialchars($_SESSION['user_fullname'][0]); ?>" required />
