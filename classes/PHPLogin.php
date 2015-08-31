@@ -833,7 +833,7 @@ class PHPLogin{
    */
   private function registerNewUser($user_name, $user_firstname, $user_lastname, $user_email, $user_password, $user_password_repeat, $captcha){
     // prevent database flooding
-    $user_name = substr(trim($user_name), 0, 64);
+    $user_name = substr(trim($user_name), 0, 254);
     $user_email = substr(trim($user_email), 0, 254);
     
     // check provided data validity
@@ -888,9 +888,9 @@ class PHPLogin{
         // write new users data into database
         $query_new_user_insert = $this->db_connection->prepare('INSERT INTO ' . $this->config->DB_TABLE_USER . ' (user_name, user_fullname, user_firstname, user_lastname, user_password_hash, user_email, user_activation_hash, user_registration_ip, user_registration_datetime) VALUES(:user_name, :user_fullname, :user_firstname, :user_lastname, :user_password_hash, :user_email, :user_activation_hash, :user_registration_ip, now())');
         $query_new_user_insert->bindValue(':user_name', $user_name, PDO::PARAM_STR);
-        $query_new_user_insert->bindValue(':user_fullname', $user_name, PDO::PARAM_STR);
-        $query_new_user_insert->bindValue(':user_firstname', $user_name, PDO::PARAM_STR);
-        $query_new_user_insert->bindValue(':user_lastname', $user_name, PDO::PARAM_STR);
+        $query_new_user_insert->bindValue(':user_fullname', $user_firstname . ' ' . $user_lastname, PDO::PARAM_STR);
+        $query_new_user_insert->bindValue(':user_firstname', $user_firstname, PDO::PARAM_STR);
+        $query_new_user_insert->bindValue(':user_lastname', $user_lastname, PDO::PARAM_STR);
         $query_new_user_insert->bindValue(':user_password_hash', $user_password_hash, PDO::PARAM_STR);
         $query_new_user_insert->bindValue(':user_email', $user_email, PDO::PARAM_STR);
         $query_new_user_insert->bindValue(':user_activation_hash', $user_activation_hash, PDO::PARAM_STR);
