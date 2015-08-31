@@ -11,4 +11,4 @@
 		</div>
 	</fieldset>
 </form>
-<a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>"><?php echo WORDING_BACK_TO_LOGIN; ?></a>
+<a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?login"><?php echo WORDING_BACK_TO_LOGIN; ?></a>

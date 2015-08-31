@@ -17,4 +17,4 @@
 			<button type="submit" name="submit_new_password" class="btn btn-default"><?php echo WORDING_SUBMIT_NEW_PASSWORD; ?></button>
 		</div>
 </form>
-<a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>"><?php echo WORDING_BACK_TO_LOGIN; ?></a>
+<a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?login"><?php echo WORDING_BACK_TO_LOGIN; ?></a>
