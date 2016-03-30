@@ -19,7 +19,7 @@ return array(
   "DB_PASS" => "password",
   "DB_TABLE_USER" => 'users',
   "DB_TABLE_CONNECTIONS" => 'user_connections',
-  'SITE_URL'=> 'example.com',
+  'SITE_URL'=> 'http://www.example.com',
 
 /**
  * Configuration for: Cookies

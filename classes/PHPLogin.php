@@ -984,7 +984,7 @@ class PHPLogin{
     $mail->AddAddress($user_email);
     $mail->Subject = $this->config->EMAIL_VERIFICATION_SUBJECT;
 
-    $link = 'http://' . $this->config->SITE_URL;
+    $link = $this->config->SITE_URL;
     $link .= '?id=' . urlencode($user_id) . '&verification_code=' . urlencode($user_activation_hash);
 
     // the link to your register.php, please set this value in config/email_verification.php
